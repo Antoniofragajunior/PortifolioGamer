@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfólio Gamer - Geraldo Neto | Desenvolvedor Fullstack</title>
+    <meta name="description" content="Portfólio interativo de Geraldo Neto - Desenvolvedor Fullstack especializado em JavaScript, React e Node.js">
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Fontes e ícones -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- FUNDO PIXELADO -->
+    <canvas id="pixel-bg" aria-hidden="true"></canvas>
+
+    <!-- ============ MENU PAUSE/HUD ============ -->
+    <div class="pause-overlay" id="pause-overlay"></div>
+
+    <div class="hud-menu" id="hud-menu">
+        <div class="scan-lines"></div>
+        <button class="close-hud" id="close-hud" aria-label="Fechar menu">
+            <i class="fas fa-times"></i>
+        </button>
+        
+        <h2 class="hud-title">SYSTEM MENU</h2>
+        
+        <div class="player-status">
+            <div class="player-avatar-hud">GN</div>
+            <div class="player-name-hud">GERALDO NETO</div>
+            <div class="player-class">LEVEL 29 | FULLSTACK DEVELOPER</div>
+            
+            <div class="status-bars">
+                <div class="status-bar">
+                    <div class="status-label">
+                        <span class="label">HP</span>
+                        <span>95/100</span>
+                    </div>
+                    <div class="bar-container">
+                        <div class="bar-fill hp-bar"></div>
+                    </div>
+                </div>
+                
+                <div class="status-bar">
+                    <div class="status-label">
+                        <span class="label">XP</span>
+                        <span>78%</span>
+                    </div>
+                    <div class="bar-container">
+                        <div class="bar-fill xp-bar"></div>
+                    </div>
+                </div>
+                
+                <div class="status-bar">
+                    <div class="status-label">
+                        <span class="label">MANA</span>
+                        <span>85/100</span>
+                    </div>
+                    <div class="bar-container">
+                        <div class="bar-fill mp-bar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="hud-grid">
+            <div class="hud-item" data-target="about-screen">
+                <div class="hud-icon"><i class="fas fa-user"></i></div>
+                <div class="hud-item-title">PERFIL</div>
+                <div class="hud-item-desc">STATS DO JOGADOR</div>
+                <div class="hotkey">1</div>
+            </div>
+            
+            <div class="hud-item" data-target="skills-screen">
+                <div class="hud-icon"><i class="fas fa-code"></i></div>
+                <div class="hud-item-title">SKILLS</div>
+                <div class="hud-item-desc">HABILIDADES TÉCNICAS</div>
+                <div class="hotkey">2</div>
+            </div>
+            
+            <div class="hud-item" data-target="projects-screen">
+                <div class="hud-icon"><i class="fas fa-rocket"></i></div>
+                <div class="hud-item-title">MISSÕES</div>
+                <div class="hud-item-desc">PROJETOS CONCLUÍDOS</div>
+                <div class="hotkey">3</div>
+            </div>
+            
+            <div class="hud-item" data-target="formations-screen">
+                <div class="hud-icon"><i class="fas fa-graduation-cap"></i></div>
+                <div class="hud-item-title">FORMAÇÕES</div>
+                <div class="hud-item-desc">CONQUISTAS E XP</div>
+                <div class="hotkey">4</div>
+            </div>
+            
+            <div class="hud-item" data-target="contact-screen">
+                <div class="hud-icon"><i class="fas fa-envelope"></i></div>
+                <div class="hud-item-title">CONTATO</div>
+                <div class="hud-item-desc">NOVAS MISSÕES</div>
+                <div class="hotkey">5</div>
+            </div>
+            
+            <div class="hud-item" id="hud-resume">
+                <div class="hud-icon"><i class="fas fa-play"></i></div>
+                <div class="hud-item-title">RETORNAR</div>
+                <div class="hud-item-desc">CONTINUAR JOGO</div>
+                <div class="hotkey">ESC</div>
+            </div>
+        </div>
+    </div>
+
+    <button class="hud-trigger-btn" id="hud-trigger-btn" aria-label="Abrir menu do sistema">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- TELAS -->
+    <section id="loading-screen" class="screen" role="region" aria-label="Tela de carregamento">
+        <div class="loading-text">CARREGANDO SISTEMAS...</div>
+        <div class="loading-bar">
+            <div class="loading-progress" id="loading-progress"></div>
+        </div>
+    </section>
+
+    <section id="intro-screen" class="screen hidden" role="region" aria-label="Apresentação">
+        <div class="name-container">
+            <h1 class="developer-name glitch" data-text="GERALDO NETO">GERALDO NETO</h1>
+            <p class="developer-role">DESENVOLVEDOR FULLSTACK</p>
+        </div>
+        <button id="start-btn" class="start-button pulse">START</button>
+        
+        <div class="social-links">
+            <a href="https://github.com/geraldoneto" class="social-link" target="_blank" aria-label="GitHub">
+                <i class="fab fa-github"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/gerald0net0/" class="social-link" target="_blank" aria-label="LinkedIn">
+                <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="curriculo-geraldo-neto.pdf" class="social-link" target="_blank" aria-label="Currículo">
+                <i class="fas fa-file-alt"></i>
+            </a>
+        </div>
+        <div class="esc-hint">
+            PRESS <span class="esc-key">ESC</span> FOR MENU
+        </div>
+    </section>
+
+    <section id="about-screen" class="screen hidden" role="region" aria-label="Sobre mim">
+        <h2 class="screen-title">SOBRE O JOGADOR</h2>
+        <div class="about-container">
+            <div class="avatar-container">
+                <img id="avatar-image" src="img/foto-perfil.png" alt="Avatar de Geraldo Neto" loading="lazy">
+            </div>
+            <div class="chat-box">
+                <p id="chat-text"></p>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills-screen" class="screen hidden" role="region" aria-label="Habilidades">
+        <h2 class="screen-title">SKILLS & HABILIDADES</h2>
+        
+        <div class="skills-section">
+            <div class="skills-title">TECNOLOGIAS QUE DOMINO</div>
+            <div class="skills-grid" id="hard-skills"></div>
+        </div>
+        
+        <div class="skills-section">
+            <div class="skills-title">MINHAS SOFT SKILLS</div>
+            <div class="skills-grid" id="soft-skills"></div>
+        </div>
+    </section>
+
+    <section id="formations-screen" class="screen hidden" role="region" aria-label="Formações">
+        <h2 class="screen-title">FORMAÇÕES & CONQUISTAS</h2>
+        <div class="timeline-container" id="timeline-container"></div>
+    </section>
+
+    <section id="projects-screen" class="screen hidden" role="region" aria-label="Projetos">
+        <h2 class="screen-title">MISSÕES CONCLUÍDAS</h2>
+        <div class="projetos-grid-novo" id="projects-grid"></div>
+        <div class="projects-info">
+            <p>
+                💡 <strong>LEGENDA:</strong> 
+                <span class="legend-beginner">● INICIANTE</span> | 
+                <span class="legend-intermediate">● INTERMEDIÁRIO</span> | 
+                <span class="legend-advanced">● AVANÇADO</span> | 
+                <span class="legend-expert">● EXPERT</span>
+                <br>
+                Total de missões concluídas: <strong id="total-missions">6</strong> | XP total acumulado: <strong id="total-xp">+2900 XP</strong>
+            </p>
+        </div>
+    </section>
+
+    <section id="contact-screen" class="screen hidden" role="region" aria-label="Contato">
+        <h2 class="screen-title">CONTATO & MISSÕES</h2>
+        
+        <div class="contact-container" id="contact-container"></div>
+
+        <div class="social-links contact-social">
+            <a href="https://github.com/geraldoneto" class="social-link" target="_blank" aria-label="GitHub">
+                <i class="fab fa-github"></i>
+            </a>
+            <a href="https://linkedin.com/in/geraldoneto" class="social-link" target="_blank" aria-label="LinkedIn">
+                <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://wa.me/5599999999999" class="social-link" target="_blank" aria-label="WhatsApp">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+            <a href="curriculo-geraldo-neto.pdf" class="social-link" target="_blank" aria-label="Currículo">
+                <i class="fas fa-file-alt"></i>
+            </a>
+        </div>
+        
+        <div class="contact-message">
+            <p>
+                <strong>PRONTO PARA NOVAS MISSÕES!</strong> Estou disponível para projetos freelancer, 
+                colaborações em startups ou posições full-time. Vamos construir algo incrível juntos? 
+                Entre em contato e vamos conversar sobre sua próxima missão!
+            </p>
+        </div>
+    </section>
+
+    <!-- JavaScript -->
+    <script src="js/script.js"></script>
+</body>
+</html>
