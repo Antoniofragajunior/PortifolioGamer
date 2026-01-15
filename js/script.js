@@ -71,9 +71,17 @@ function initScreenManager() {
                     loadProjects();
                     break;
                 case 6: // Contato
-                    animateElements('.contact-card', { delay: 100, animation: 'scaleIn' });
                     loadContact();
-                    break;
+          
+                    setTimeout(() => {
+        // Animar os cartões após carregamento
+                    animateElements('.contact-card', { 
+                        delay: 100, 
+                        animation: 'scaleIn',
+                        stagger: true 
+                    });
+                }, 100);
+                break;
             }
         },
         
@@ -124,15 +132,27 @@ function animateBars(selector, delay = 150) {
 }
 
 function typeWriter(text, element, speed) {
+    // Parar digitação anterior se existir
+    if (window.activeTypeWriter) {
+        clearInterval(window.activeTypeWriter.interval);
+    }
+    
     let i = 0;
     element.innerHTML = '';
     
-    const interval = setInterval(() => {
+    // Armazenar o intervalo globalmente
+    window.activeTypeWriter = {
+        interval: null,
+        element: element
+    };
+    
+    window.activeTypeWriter.interval = setInterval(() => {
         if (i < text.length) {
             element.innerHTML += text.charAt(i);
             i++;
         } else {
-            clearInterval(interval);
+            clearInterval(window.activeTypeWriter.interval);
+            window.activeTypeWriter = null;
         }
     }, speed);
 }
@@ -173,6 +193,7 @@ function loadAllData() {
     loadHardSkills();
     loadSoftSkills();
     loadFormations();
+    loadContact();
     // Projects e Contact serão carregados quando a tela for aberta
 }
 
@@ -426,7 +447,8 @@ function loadProjects() {
     document.getElementById('total-xp').textContent = `+${projects.reduce((sum, p) => sum + parseInt(p.xp.match(/\d+/)[0]), 0)} XP`;
 }
 
-function loadContact() {
+function loadContact() {               
+
     const contacts = [
         {
             icon: 'fas fa-envelope',
@@ -455,7 +477,10 @@ function loadContact() {
     ];
     
     const container = document.getElementById('contact-container');
-    if (!container) return;
+    if (!container) {
+        console.error('Container de contato não encontrado!');
+        return;
+    }
     
     container.innerHTML = contacts.map(contact => `
         <div class="contact-card">
@@ -469,6 +494,7 @@ function loadContact() {
             <div class="contact-status"></div>
         </div>
     `).join('');
+    console.log('Dados de contato carregados com sucesso!');
 }
 
 // ==================== BACKGROUND PIXELADO ====================
